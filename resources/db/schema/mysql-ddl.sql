@@ -749,65 +749,26 @@ CREATE TABLE         releases (
   fromname          VARCHAR(255)                   NULL,
   completion        FLOAT                          NOT NULL DEFAULT '0',
   categories_id     INT                            NOT NULL DEFAULT '0010',
-  videos_id         MEDIUMINT(11) UNSIGNED         NOT NULL DEFAULT '0' COMMENT 'FK to videos.id of the parent series.',
-  tv_episodes_id    MEDIUMINT(11) SIGNED           NOT NULL DEFAULT '0' COMMENT 'FK to tv_episodes.id for the episode.',
-  imdbid            MEDIUMINT(7) UNSIGNED ZEROFILL NULL,
-  xxxinfo_id        INT SIGNED                     NOT NULL DEFAULT '0',
-  musicinfo_id      INT(11) SIGNED               NULL COMMENT 'FK to musicinfo.id',
-  consoleinfo_id    INT(11) SIGNED               NULL COMMENT 'FK to consoleinfo.id',
-  gamesinfo_id      INT SIGNED                     NOT NULL DEFAULT '0',
-  bookinfo_id       INT(11) SIGNED               NULL COMMENT 'FK to bookinfo.id',
-  anidbid           INT                            NULL COMMENT 'FK to anidb_titles.anidbid',
-  predb_id          INT(11) UNSIGNED               NOT NULL DEFAULT '0' COMMENT 'FK to predb.id',
   grabs             INT UNSIGNED                   NOT NULL DEFAULT '0',
   comments          INT                            NOT NULL DEFAULT '0',
   passwordstatus    TINYINT                        NOT NULL DEFAULT '0',
   rarinnerfilecount INT                            NOT NULL DEFAULT '0',
   haspreview        TINYINT                        NOT NULL DEFAULT '0',
-  nfostatus         TINYINT                        NOT NULL DEFAULT '0',
-  jpgstatus         TINYINT(1)                     NOT NULL DEFAULT '0',
-  videostatus       TINYINT(1)                     NOT NULL DEFAULT '0',
-  audiostatus       TINYINT(1)                     NOT NULL DEFAULT '0',
-  dehashstatus      TINYINT(1)                     NOT NULL DEFAULT '0',
-  reqidstatus       TINYINT(1)                     NOT NULL DEFAULT '0',
   nzb_guid          BINARY(16)                     NULL,
   nzbstatus         TINYINT(1)                     NOT NULL DEFAULT '0',
   iscategorized     TINYINT(1)                     NOT NULL DEFAULT '0',
   isrenamed         TINYINT(1)                     NOT NULL DEFAULT '0',
   ishashed          TINYINT(1)                     NOT NULL DEFAULT '0',
   isrequestid       TINYINT(1)                     NOT NULL DEFAULT '0',
-  proc_pp           TINYINT(1)                     NOT NULL DEFAULT '0',
-  proc_sorter       TINYINT(1)                     NOT NULL DEFAULT '0',
-  proc_par2         TINYINT(1)                     NOT NULL DEFAULT '0',
-  proc_nfo          TINYINT(1)                     NOT NULL DEFAULT '0',
-  proc_files        TINYINT(1)                     NOT NULL DEFAULT '0',
-  proc_uid          TINYINT(1)                     NOT NULL DEFAULT '0',
-  proc_srr          TINYINT(1)                     NOT NULL DEFAULT '0' COMMENT 'Has the release been srr
-processed',
-  proc_hash16k      TINYINT(1)                     NOT NULL DEFAULT '0' COMMENT 'Has the release been hash16k
-processed',
   PRIMARY KEY                                 (id, categories_id),
   INDEX ix_releases_name                      (name),
   INDEX ix_releases_groupsid                  (groups_id,passwordstatus),
   INDEX ix_releases_postdate_searchname       (postdate,searchname),
   INDEX ix_releases_guid                      (guid),
-  INDEX ix_releases_leftguid                  (leftguid ASC, predb_id),
+  INDEX ix_releases_leftguid                  (leftguid ASC),
   INDEX ix_releases_nzb_guid                  (nzb_guid),
-  INDEX ix_releases_videos_id                 (videos_id),
-  INDEX ix_releases_tv_episodes_id            (tv_episodes_id),
-  INDEX ix_releases_imdbid                    (imdbid),
-  INDEX ix_releases_xxxinfo_id                (xxxinfo_id),
-  INDEX ix_releases_musicinfo_id              (musicinfo_id,passwordstatus),
-  INDEX ix_releases_consoleinfo_id            (consoleinfo_id),
-  INDEX ix_releases_gamesinfo_id              (gamesinfo_id),
-  INDEX ix_releases_bookinfo_id               (bookinfo_id),
-  INDEX ix_releases_anidbid                   (anidbid),
-  INDEX ix_releases_predb_id_searchname       (predb_id,searchname),
   INDEX ix_releases_haspreview_passwordstatus (haspreview,passwordstatus),
-  INDEX ix_releases_passwordstatus            (passwordstatus),
-  INDEX ix_releases_nfostatus                 (nfostatus,size),
-  INDEX ix_releases_dehashstatus              (dehashstatus,ishashed),
-  INDEX ix_releases_reqidstatus               (adddate,reqidstatus,isrequestid)
+  INDEX ix_releases_passwordstatus            (passwordstatus)
 )
   ENGINE          = InnoDB
   DEFAULT CHARSET = utf8
@@ -870,6 +831,56 @@ CREATE TABLE releases_groups (
   COLLATE         = utf8_unicode_ci
   ROW_FORMAT      = DYNAMIC;
 
+DROP TABLE IF EXISTS releases_processing;
+CREATE TABLE releases_processing (
+  releases_id       INT(11) UNSIGNED    NOT NULL DEFAULT '0',
+  proc_pp           TINYINT(1)          NOT NULL DEFAULT '0',
+  proc_sorter       TINYINT(1)          NOT NULL DEFAULT '0',
+  proc_par2         TINYINT(1)          NOT NULL DEFAULT '0',
+  proc_nfo          TINYINT(1)          NOT NULL DEFAULT '0',
+  proc_files        TINYINT(1)          NOT NULL DEFAULT '0',
+  proc_uid          TINYINT(1)          NOT NULL DEFAULT '0',
+  proc_srr          TINYINT(1)          NOT NULL DEFAULT '0' COMMENT 'Has the release been srr
+processed',
+  proc_hash16k      TINYINT(1)          NOT NULL DEFAULT '0' COMMENT 'Has the release been hash16k
+processed',
+  PRIMARY KEY (releases_id)
+)
+  ENGINE          = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE         = utf8_unicode_ci
+  ROW_FORMAT      = DYNAMIC;
+
+DROP TABLE IF EXISTS releases_ids;
+CREATE TABLE releases_ids (
+  releases_id       INT(11) UNSIGNED    NOT NULL DEFAULT '0',
+  videos_id         MEDIUMINT(11) UNSIGNED         NOT NULL DEFAULT '0' COMMENT 'FK to videos.id of the parent series.',
+  tv_episodes_id    MEDIUMINT(11) SIGNED           NOT NULL DEFAULT '0' COMMENT 'FK to tv_episodes.id for the episode.',
+  imdbid            MEDIUMINT(7) UNSIGNED ZEROFILL NULL,
+  xxxinfo_id        INT SIGNED                     NOT NULL DEFAULT '0',
+  musicinfo_id      INT(11) SIGNED               NULL COMMENT 'FK to musicinfo.id',
+  consoleinfo_id    INT(11) SIGNED               NULL COMMENT 'FK to consoleinfo.id',
+  gamesinfo_id      INT SIGNED                     NOT NULL DEFAULT '0',
+  bookinfo_id       INT(11) SIGNED               NULL COMMENT 'FK to bookinfo.id',
+  anidbid           INT                            NULL COMMENT 'FK to anidb_titles.anidbid',
+  predb_id          INT(11) UNSIGNED               NOT NULL DEFAULT '0' COMMENT 'FK to predb.id',
+  PRIMARY KEY (releases_id),
+  INDEX ix_releases_videos_id                 (videos_id),
+  INDEX ix_releases_tv_episodes_id            (tv_episodes_id),
+  INDEX ix_releases_imdbid                    (imdbid),
+  INDEX ix_releases_xxxinfo_id                (xxxinfo_id),
+  INDEX ix_releases_musicinfo_id              (musicinfo_id),
+  INDEX ix_releases_consoleinfo_id            (consoleinfo_id),
+  INDEX ix_releases_gamesinfo_id              (gamesinfo_id),
+  INDEX ix_releases_bookinfo_id               (bookinfo_id),
+  INDEX ix_releases_anidbid                   (anidbid),
+  INDEX ix_releases_predb_id                  (predb_id)
+)
+ENGINE          = InnoDB
+DEFAULT CHARSET = utf8
+COLLATE         = utf8_unicode_ci
+ROW_FORMAT      = DYNAMIC;
+
 DROP TABLE IF EXISTS release_regexes;
 CREATE TABLE release_regexes (
   releases_id           INT(11) UNSIGNED    NOT NULL DEFAULT '0',
@@ -882,6 +893,25 @@ CREATE TABLE release_regexes (
   COLLATE         = utf8_unicode_ci
   ROW_FORMAT      = DYNAMIC;
 
+DROP TABLE IF EXISTS releases_status;
+CREATE TABLE releases_status (
+  releases_id       INT(11) UNSIGNED    NOT NULL DEFAULT '0',
+  nfostatus         TINYINT             NOT NULL DEFAULT '0',
+  jpgstatus         TINYINT(1)          NOT NULL DEFAULT '0',
+  videostatus       TINYINT(1)          NOT NULL DEFAULT '0',
+  audiostatus       TINYINT(1)          NOT NULL DEFAULT '0',
+  dehashstatus      TINYINT(1)          NOT NULL DEFAULT '0',
+  reqidstatus       TINYINT(1)          NOT NULL DEFAULT '0',
+
+  PRIMARY KEY (releases_id),
+  INDEX ix_releases_nfostatus                 (nfostatus),
+  INDEX ix_releases_dehashstatus              (dehashstatus),
+  INDEX ix_releases_reqidstatus               (reqidstatus)
+)
+  ENGINE          = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE         = utf8_unicode_ci
+  ROW_FORMAT      = DYNAMIC;
 
 DROP TABLE IF EXISTS release_unique;
 CREATE TABLE release_unique (
