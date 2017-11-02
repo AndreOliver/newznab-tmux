@@ -105,4 +105,28 @@ class Release extends Model
     {
         return $this->hasMany(ReleasesGroups::class, 'releases_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function status()
+    {
+        return $this->hasMany(ReleaseStatus::class, 'releases_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function relatedIds()
+    {
+        return $this->hasMany(ReleaseRelatedId::class, 'releases_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function processing()
+    {
+        return $this->hasMany(ReleaseProcessing::class, 'releases_id');
+    }
 }
