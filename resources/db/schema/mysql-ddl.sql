@@ -749,6 +749,7 @@ CREATE TABLE         releases (
   fromname          VARCHAR(255)                   NULL,
   completion        FLOAT                          NOT NULL DEFAULT '0',
   categories_id     INT                            NOT NULL DEFAULT '0010',
+  predb_id          INT(11) UNSIGNED               NOT NULL DEFAULT '0' COMMENT 'FK to predb.id',
   grabs             INT UNSIGNED                   NOT NULL DEFAULT '0',
   comments          INT                            NOT NULL DEFAULT '0',
   passwordstatus    TINYINT                        NOT NULL DEFAULT '0',
@@ -768,7 +769,8 @@ CREATE TABLE         releases (
   INDEX ix_releases_leftguid                  (leftguid ASC),
   INDEX ix_releases_nzb_guid                  (nzb_guid),
   INDEX ix_releases_haspreview_passwordstatus (haspreview,passwordstatus),
-  INDEX ix_releases_passwordstatus            (passwordstatus)
+  INDEX ix_releases_passwordstatus            (passwordstatus),
+  INDEX ix_releases_predb_id                  (predb_id)
 )
   ENGINE          = InnoDB
   DEFAULT CHARSET = utf8
@@ -831,8 +833,8 @@ CREATE TABLE releases_groups (
   COLLATE         = utf8_unicode_ci
   ROW_FORMAT      = DYNAMIC;
 
-DROP TABLE IF EXISTS releases_processing;
-CREATE TABLE releases_processing (
+DROP TABLE IF EXISTS release_processing;
+CREATE TABLE release_processing (
   releases_id       INT(11) UNSIGNED    NOT NULL DEFAULT '0' COMMENT 'FK to releases.id',
   proc_pp           TINYINT(1)          NOT NULL DEFAULT '0',
   proc_sorter       TINYINT(1)          NOT NULL DEFAULT '0',
@@ -865,7 +867,6 @@ CREATE TABLE release_related_ids (
   gamesinfo_id      INT SIGNED                     NOT NULL DEFAULT '0' 'FK to gamesinfo.id',
   bookinfo_id       INT(11) SIGNED               NULL COMMENT 'FK to bookinfo.id',
   anidbid           INT                            NULL COMMENT 'FK to anidb_titles.anidbid',
-  predb_id          INT(11) UNSIGNED               NOT NULL DEFAULT '0' COMMENT 'FK to predb.id',
   created_at DATETIME NOT NULL,
   updated_at DATETIME NOT NULL,
   PRIMARY KEY (releases_id),
@@ -877,8 +878,7 @@ CREATE TABLE release_related_ids (
   INDEX ix_releases_consoleinfo_id            (consoleinfo_id),
   INDEX ix_releases_gamesinfo_id              (gamesinfo_id),
   INDEX ix_releases_bookinfo_id               (bookinfo_id),
-  INDEX ix_releases_anidbid                   (anidbid),
-  INDEX ix_releases_predb_id                  (predb_id)
+  INDEX ix_releases_anidbid                   (anidbid)
 )
 ENGINE          = InnoDB
 DEFAULT CHARSET = utf8
@@ -897,8 +897,8 @@ CREATE TABLE release_regexes (
   COLLATE         = utf8_unicode_ci
   ROW_FORMAT      = DYNAMIC;
 
-DROP TABLE IF EXISTS releases_status;
-CREATE TABLE releases_status (
+DROP TABLE IF EXISTS release_status;
+CREATE TABLE release_status (
   releases_id       INT(11) UNSIGNED    NOT NULL DEFAULT '0' COMMENT 'FK to releases.id',
   nfostatus         TINYINT             NOT NULL DEFAULT '0' COMMENT 'Does the release have associated nfo',
   jpgstatus         TINYINT(1)          NOT NULL DEFAULT '0',
