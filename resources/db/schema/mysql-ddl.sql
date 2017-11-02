@@ -833,7 +833,7 @@ CREATE TABLE releases_groups (
 
 DROP TABLE IF EXISTS releases_processing;
 CREATE TABLE releases_processing (
-  releases_id       INT(11) UNSIGNED    NOT NULL DEFAULT '0',
+  releases_id       INT(11) UNSIGNED    NOT NULL DEFAULT '0' COMMENT 'FK to releases.id',
   proc_pp           TINYINT(1)          NOT NULL DEFAULT '0',
   proc_sorter       TINYINT(1)          NOT NULL DEFAULT '0',
   proc_par2         TINYINT(1)          NOT NULL DEFAULT '0',
@@ -844,6 +844,8 @@ CREATE TABLE releases_processing (
 processed',
   proc_hash16k      TINYINT(1)          NOT NULL DEFAULT '0' COMMENT 'Has the release been hash16k
 processed',
+  created_at DATETIME NOT NULL,
+  updated_at DATETIME NOT NULL,
   PRIMARY KEY (releases_id)
 )
   ENGINE          = InnoDB
@@ -851,19 +853,21 @@ processed',
   COLLATE         = utf8_unicode_ci
   ROW_FORMAT      = DYNAMIC;
 
-DROP TABLE IF EXISTS releases_ids;
-CREATE TABLE releases_ids (
-  releases_id       INT(11) UNSIGNED    NOT NULL DEFAULT '0',
+DROP TABLE IF EXISTS release_related_ids;
+CREATE TABLE release_related_ids (
+  releases_id       INT(11) UNSIGNED    NOT NULL DEFAULT '0' COMMENT 'FK to releases.id',
   videos_id         MEDIUMINT(11) UNSIGNED         NOT NULL DEFAULT '0' COMMENT 'FK to videos.id of the parent series.',
   tv_episodes_id    MEDIUMINT(11) SIGNED           NOT NULL DEFAULT '0' COMMENT 'FK to tv_episodes.id for the episode.',
   imdbid            MEDIUMINT(7) UNSIGNED ZEROFILL NULL,
-  xxxinfo_id        INT SIGNED                     NOT NULL DEFAULT '0',
+  xxxinfo_id        INT SIGNED                     NOT NULL DEFAULT '0' 'FK to xxxinfo.id',
   musicinfo_id      INT(11) SIGNED               NULL COMMENT 'FK to musicinfo.id',
   consoleinfo_id    INT(11) SIGNED               NULL COMMENT 'FK to consoleinfo.id',
-  gamesinfo_id      INT SIGNED                     NOT NULL DEFAULT '0',
+  gamesinfo_id      INT SIGNED                     NOT NULL DEFAULT '0' 'FK to gamesinfo.id',
   bookinfo_id       INT(11) SIGNED               NULL COMMENT 'FK to bookinfo.id',
   anidbid           INT                            NULL COMMENT 'FK to anidb_titles.anidbid',
   predb_id          INT(11) UNSIGNED               NOT NULL DEFAULT '0' COMMENT 'FK to predb.id',
+  created_at DATETIME NOT NULL,
+  updated_at DATETIME NOT NULL,
   PRIMARY KEY (releases_id),
   INDEX ix_releases_videos_id                 (videos_id),
   INDEX ix_releases_tv_episodes_id            (tv_episodes_id),
@@ -895,13 +899,15 @@ CREATE TABLE release_regexes (
 
 DROP TABLE IF EXISTS releases_status;
 CREATE TABLE releases_status (
-  releases_id       INT(11) UNSIGNED    NOT NULL DEFAULT '0',
-  nfostatus         TINYINT             NOT NULL DEFAULT '0',
+  releases_id       INT(11) UNSIGNED    NOT NULL DEFAULT '0' COMMENT 'FK to releases.id',
+  nfostatus         TINYINT             NOT NULL DEFAULT '0' COMMENT 'Does the release have associated nfo',
   jpgstatus         TINYINT(1)          NOT NULL DEFAULT '0',
   videostatus       TINYINT(1)          NOT NULL DEFAULT '0',
   audiostatus       TINYINT(1)          NOT NULL DEFAULT '0',
   dehashstatus      TINYINT(1)          NOT NULL DEFAULT '0',
   reqidstatus       TINYINT(1)          NOT NULL DEFAULT '0',
+  created_at DATETIME NOT NULL,
+  updated_at DATETIME NOT NULL,
 
   PRIMARY KEY (releases_id),
   INDEX ix_releases_nfostatus                 (nfostatus),
