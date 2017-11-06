@@ -15,8 +15,8 @@ $dir = NN_RES.'movednzbs/';
 
 if (! isset($argv[1]) || ! in_array($argv[1], ['true', 'move'])) {
     exit($pdo->log->error("\nThis script can remove all nzbs not found in the db and all releases with no nzbs found. It can also move invalid nzbs.\n\n"
-		."php $argv[0] true     ...: For a dry run, to see how many would be moved.\n"
-		."php $argv[0] move     ...: Move NZBs that are possibly bad or have no release. They are moved into this folder: $dir\n"));
+        ."php $argv[0] true     ...: For a dry run, to see how many would be moved.\n"
+        ."php $argv[0] move     ...: Move NZBs that are possibly bad or have no release. They are moved into this folder: $dir\n"));
 }
 
 if (! is_dir($dir) && ! mkdir($dir)) {
@@ -49,7 +49,7 @@ foreach ($itr as $filePath) {
             $releases->deleteSingle(['g' => $guid, 'i' => false], $nzb, $releaseImage);
             $moved++;
         }
-        ++$checked;
+        $checked++;
         echo "$checked / $moved\r";
     }
 }
@@ -65,12 +65,12 @@ if ($res instanceof \Traversable) {
     foreach ($res as $row) {
         $nzbpath = $nzb->getNZBPath($row['guid']);
         if (! is_file($nzbpath)) {
-            ++$deleted;
+            $deleted++;
             $releases->deleteSingle(['g' => $row['guid'], 'i' => $row['id']], $nzb, $releaseImage);
         } elseif ($row['nzbstatus'] != 1) {
             $pdo->queryExec(sprintf('UPDATE releases SET nzbstatus = 1 WHERE id = %d', $row['id']));
         }
-        ++$checked;
+        $checked++;
         echo "$checked / $deleted\r";
     }
 }

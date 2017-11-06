@@ -1,3 +1,15 @@
+2017-11-06 DariusIII
+	* Fix: Fix paths to required files in update folder
+	* Chg: Move scripts from update/nix to update, remove nix folder
+	* Chg: Remove windows scripts
+	* Chg: Update Forking class
+	* Chg: Update ProcessReleases class
+2017-11-03 DariusIII
+	* Chg: Update composer.lock
+	* Chg: Slightly change Binaries class
+	* Chg: Remove failed regexes logging from Regexes class
+	* Chg: Update CollectionsCleaning and Regexes classes
+	* Chg: Update Groups class and MissedPart model
 2017-11-02 DariusIII
 	* Chg: Update Utility class showApiError response headers
 	* Chg: Update Release model and add back updated ReleasesGroups model
